@@ -20,6 +20,22 @@
 
             <p class="p-2">Hola, mi nombre es {{ nombre }}, tengo {{ edad }} años y vivo en {{ ciudad }}.</p>
         </section>
+
+
+         <section class="border border-primary p-3 rounded shadow-sm mb-4">
+            <h2>Paso #3 - Contador Interactivo (Interpolación y Eventos)</h2>
+            <p class="p-0"><span class="fw-bold">Contador:</span> <span class="text-primary">{{ contador }}</span></p>           
+            <button @click="incrementar" class="btn btn-success me-2">
+                Incrementar
+            </button>
+            <button @click="decrementar" class="btn btn-danger" :disabled="contador == 0">
+                Decrementar
+            </button> 
+        </section>
+
+
+
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
@@ -28,10 +44,23 @@
         new Vue({
             el: '#app',
             data: {
-                // Definicion de variables
+                // Definicion de variables para el Paso #2 - Información de Perfil Simple
                 nombre: "Ana García",
                 edad: 30,
                 ciudad: "Tupungato",
+
+                // Definicion de la variable para el Paso #3 Contador Interactivo (Interpolación y Eventos)
+                 contador: 0, 
+            },
+            methods: {
+                incrementar() {
+                    this.contador++;
+                },
+                decrementar() {
+                    // Se considera que el contador no debe ser negativo
+                    if (this.contador>0)
+                        this.contador--;
+                }
             }
         });
     </script>
