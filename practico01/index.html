@@ -15,14 +15,14 @@
         <section class="border border-primary p-3 rounded shadow-sm mb-4">
             <h2>Paso #2 - Información de Perfil Simple</h2>
             <p class="p-0"><span class="fw-bold">Nombre:</span> <span class="text-primary">{{ nombre }}</span></p>
-            <p class="p-0"><span class="fw-bold">edad:</span> <span class="text-primary">{{ edad }}</span></p>
+            <p class="p-0"><span class="fw-bold">Edad:</span> <span class="text-primary">{{ edad }}</span></p>
             <p class="p-0"><span class="fw-bold">Ciudad:</span> <span class="text-primary">{{ ciudad }}</span></p>
 
             <p class="p-2">Hola, mi nombre es {{ nombre }}, tengo {{ edad }} años y vivo en {{ ciudad }}.</p>
         </section>
 
 
-         <section class="border border-primary p-3 rounded shadow-sm mb-4">
+        <section class="border border-primary p-3 rounded shadow-sm mb-4">
             <h2>Paso #3 - Contador Interactivo (Interpolación y Eventos)</h2>
             <p class="p-0"><span class="fw-bold">Contador:</span> <span class="text-primary">{{ contador }}</span></p>           
             <button @click="incrementar" class="btn btn-success me-2">
@@ -33,8 +33,42 @@
             </button> 
         </section>
 
+        <section class="border border-primary p-3 rounded shadow-sm mb-4">
+            <h2>Paso #4 - Lista de Tareas con Conteo y Estado (Propiedades Computadas, Interpolación, Eventos)</h2>
+     
+            <!-- Input para el ingreso de una nueva tarea -->
+            <input type="text" v-model="nuevaTarea" @keyup.enter="agregarTarea" placeholder="Escribe una nueva tarea...">
+            <button @click="agregarTarea" class="btn btn-success">
+                Agregar Tarea
+            </button>
+            
+            <!-- Listado de tareas -->
+            <table class="table table-striped table-hover table-bordered mt-4">    
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Nombre de la tarea</th>
+                        <th scope="col">Completada</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="unaTarea in tareas" :key="unaTarea.id">
+                        
+                        <td><span :class="{'text-decoration-line-through text-muted': unaTarea.completada}">
+                                {{ unaTarea.texto }}
+                            </span>
+                        </td>
+                        
+                        <td>
+                            <input type="checkbox" v-model="unaTarea.completada" class="border border-primary form-check-input me-2">
+                        </td>
+                    </tr>  
+                </tbody>
+            </table>
 
-
+            <!-- Tareas pendientes y totaless -->
+            <p>Tareas Pendientes: {{ tareasPendientes }}</p>
+            <p>Total de Tareas: {{ totalTareas }}</p>
+        </section>
 
     </div>
 
@@ -51,6 +85,10 @@
 
                 // Definicion de la variable para el Paso #3 Contador Interactivo (Interpolación y Eventos)
                  contador: 0, 
+
+                // Definicion de variables para el Paso #4 - Lista de Tareas con Conteo y Estado
+                nuevaTarea: '',
+                tareas: []
             },
             methods: {
                 incrementar() {
@@ -60,6 +98,29 @@
                     // Se considera que el contador no debe ser negativo
                     if (this.contador>0)
                         this.contador--;
+                },
+
+                agregarTarea() {
+                    const laTarea = this.nuevaTarea.trim()
+                    if ( laTarea !== '') {
+                        this.tareas.push({
+                            id: this.tareas.length+1,   //Como no se eliminan tareas, el nuevo ID sera simplemente sumar 1 al tamaño del array
+                                                        //Si se pudieran eliminar tareas hay que buscar el ID mas grande y sumarle 1
+                            texto: laTarea,
+                            completada: false
+                        });
+                        this.nuevaTarea = ''; // Limpiar el input
+                    }
+                }
+            },
+            computed: {
+                tareasPendientes() {
+                    // Se genera un array con las tereas no completadas, su tamaño refleja la cantidad de tareas pendientes
+                     return this.tareas.filter(unaTarea => !unaTarea.completada).length;
+                },
+                totalTareas() {
+                    // La cantidad total de tareas coinside con el tamaño del array
+                    return this.tareas.length;
                 }
             }
         });
