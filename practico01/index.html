@@ -10,18 +10,16 @@
     <title>Trabajo Práctico #1 - Vue.js</title>
 </head>
 <body>
-
     <div id="app" class="container mt-5">
+        <!-- Parcial 1 -->
+        <h1>Parcial N° 1</h1>
         <section class="border border-primary p-3 rounded shadow-sm mb-4">
             <h2>Paso #2 - Información de Perfil Simple</h2>
             <p class="p-0"><span class="fw-bold">Nombre:</span> <span class="text-primary">{{ nombre }}</span></p>
             <p class="p-0"><span class="fw-bold">Edad:</span> <span class="text-primary">{{ edad }}</span></p>
             <p class="p-0"><span class="fw-bold">Ciudad:</span> <span class="text-primary">{{ ciudad }}</span></p>
-
             <p class="p-2">Hola, mi nombre es {{ nombre }}, tengo {{ edad }} años y vivo en {{ ciudad }}.</p>
         </section>
-
-
         <section class="border border-primary p-3 rounded shadow-sm mb-4">
             <h2>Paso #3 - Contador Interactivo (Interpolación y Eventos)</h2>
             <p class="p-0"><span class="fw-bold">Contador:</span> <span class="text-primary">{{ contador }}</span></p>           
@@ -32,16 +30,13 @@
                 Decrementar
             </button> 
         </section>
-
         <section class="border border-primary p-3 rounded shadow-sm mb-4">
             <h2>Paso #4 - Lista de Tareas con Conteo y Estado (Propiedades Computadas, Interpolación, Eventos)</h2>
-     
             <!-- Input para el ingreso de una nueva tarea -->
             <input type="text" v-model="nuevaTarea" @keyup.enter="agregarTarea" placeholder="Escribe una nueva tarea...">
             <button @click="agregarTarea" class="btn btn-success">
                 Agregar Tarea
             </button>
-            
             <!-- Listado de tareas -->
             <table class="table table-striped table-hover table-bordered mt-4">    
                 <thead class="table-dark">
@@ -51,46 +46,79 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="unaTarea in tareas" :key="unaTarea.id">
-                        
+                    <tr v-for="unaTarea in tareas" :key="unaTarea.id">   
                         <td><span :class="{'text-decoration-line-through text-muted': unaTarea.completada}">
                                 {{ unaTarea.texto }}
                             </span>
                         </td>
-                        
                         <td>
                             <input type="checkbox" v-model="unaTarea.completada" class="border border-primary form-check-input me-2">
                         </td>
                     </tr>  
                 </tbody>
             </table>
-
             <!-- Tareas pendientes y totaless -->
             <p>Tareas Pendientes: {{ tareasPendientes }}</p>
             <p>Total de Tareas: {{ totalTareas }}</p>
         </section>
-
+        
+        <!-- Parcial 2 -->
+        <h1>Parcial N° 2</h1>
+        <section>
+            <h2>Paso #1 - Lista de eventos (Nota. Tambien imprimo el Id aunque no se pedia)</h2>
+            <button @click="crearInstanciaLista" class="btn btn-success me-2" :disabled="insLista != null">
+                Crear una Instancia VUE
+            </button>       
+            <button @click="actualizarInstanciaLista" class="btn btn-success" :disabled="insLista == null">
+                Actualizar la Instancia VUE
+            </button> 
+            <button @click="destruirInstanciaLista" class="btn btn-danger" :disabled="insLista == null">
+                Destruir la Instancia VUE
+            </button>
+            <div id="textoListaEventos"><div id="listaEventos"></div></div>
+            <!-- Listado de objetos de la lista de eventos -->
+            <table class="table table-striped table-hover table-bordered mt-4">    
+                <thead class="table-dark" v-if="listaeventos.length > 0">
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Timestamp (ms)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="unObjeto in listaeventos" :key="unObjeto.id">
+                        <td> {{ unObjeto.id }}</td>
+                        <td> {{ unObjeto.nombre }}</td>
+                        <td> {{ formatoTimestamp(unObjeto.timestamp) }}</td>
+                    </tr>  
+                </tbody>
+            </table>
+        </section>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 
     <script>
-        new Vue({
+        app = new Vue({
             el: '#app',
             data: {
+                // Parcial 1
                 // Definicion de variables para el Paso #2 - Información de Perfil Simple
                 nombre: "Ana García",
                 edad: 30,
                 ciudad: "Tupungato",
-
                 // Definicion de la variable para el Paso #3 Contador Interactivo (Interpolación y Eventos)
                  contador: 0, 
-
                 // Definicion de variables para el Paso #4 - Lista de Tareas con Conteo y Estado
                 nuevaTarea: '',
-                tareas: []
+                tareas: [],
+
+                // Parcial 2
+                listaeventos: [],   // Lista de eventos del ciclo de vida    
+                insLista: null,     // Instancia de Vue para la lista de eventos
             },
             methods: {
+                // Parcial 1
                 incrementar() {
                     this.contador++;
                 },
@@ -99,7 +127,6 @@
                     if (this.contador>0)
                         this.contador--;
                 },
-
                 agregarTarea() {
                     const laTarea = this.nuevaTarea.trim()
                     if ( laTarea !== '') {
@@ -111,7 +138,57 @@
                         });
                         this.nuevaTarea = ''; // Limpiar el input
                     }
-                }
+                },
+
+                // Parcial 2
+                registrarEvento(nombre){
+                    this.listaeventos.push({
+                        id: this.listaeventos.length+1,
+                        nombre: nombre,
+                        timestamp: Date.now()
+                    })
+                },
+                crearInstanciaLista(){
+                    this.listaeventos = []  // Reinicia la lista de eventos
+                    this.insLista = new Vue({
+                        el: '#listaEventos',
+                        template: '<div>Cantidad de actualizaciones: {{ actualizaciones }}</div>',
+                        data: {
+                            actualizaciones: 0
+                        },
+                        beforeCreate()  { app.registrarEvento('beforeCreate') },
+                        created()       { app.registrarEvento('created')},
+                        beforeMount()   { app.registrarEvento('beforeMount')},
+                        mounted()       { app.registrarEvento('mounted')},
+                        beforeUpdate()  { app.registrarEvento('beforeupdate')},
+                        updated()       { app.registrarEvento('updated')},
+                        beforeDestroy() { app.registrarEvento('beforeDestroy')},
+                        destroyed()     { app.registrarEvento('destroyed')},
+                    });
+                },
+                actualizarInstanciaLista(){
+                    if (this.insLista != null)
+                        this.insLista.actualizaciones++
+                },
+                destruirInstanciaLista(){
+                    this.insLista.$destroy();
+                    this.insLista = null;
+                    document.getElementById("textoListaEventos").innerHTML = '<div id="listaEventos"></div>'
+                },
+                formatoTimestamp(timestamp) {
+                    const date = new Date(timestamp);
+                    const fechaHora = date.toLocaleTimeString('es-AR', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false
+                    });
+                    const ms = String(date.getMilliseconds()).padStart(3, '0');
+                    return `${fechaHora}.${ms}`;
+                },
             },
             computed: {
                 tareasPendientes() {
@@ -125,6 +202,5 @@
             }
         });
     </script>
-
 </body>
 </html>
