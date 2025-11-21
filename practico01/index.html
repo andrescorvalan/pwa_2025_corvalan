@@ -75,6 +75,9 @@
             <button @click="destruirInstanciaLista" class="btn btn-danger" :disabled="insLista == null">
                 Destruir la Instancia VUE
             </button>
+            <button @click="borrarTablaEventos" class="btn btn-danger" :disabled="insLista != null || listaeventos.length ==0">
+                Borrar la tabla de Eventos
+            </button>
             <div id="textoListaEventos"><div id="listaEventos"></div></div>
             <!-- Listado de objetos de la lista de eventos -->
             <table class="table table-striped table-hover table-bordered mt-4">    
@@ -97,6 +100,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
         app = new Vue({
@@ -160,7 +164,7 @@
                         created()       { app.registrarEvento('created')},
                         beforeMount()   { app.registrarEvento('beforeMount')},
                         mounted()       { app.registrarEvento('mounted')},
-                        beforeUpdate()  { app.registrarEvento('beforeupdate')},
+                        beforeUpdate()  { app.registrarEvento('beforeUpdate')},
                         updated()       { app.registrarEvento('updated')},
                         beforeDestroy() { app.registrarEvento('beforeDestroy')},
                         destroyed()     { app.registrarEvento('destroyed')},
@@ -174,6 +178,9 @@
                     this.insLista.$destroy();
                     this.insLista = null;
                     document.getElementById("textoListaEventos").innerHTML = '<div id="listaEventos"></div>'
+                },
+                borrarTablaEventos(){
+                     this.listaeventos=[]
                 },
                 formatoTimestamp(timestamp) {
                     const date = new Date(timestamp);
@@ -189,6 +196,27 @@
                     const ms = String(date.getMilliseconds()).padStart(3, '0');
                     return `${fechaHora}.${ms}`;
                 },
+                 async obtenerPost(postId) {
+                    const url = `https://jsonplaceholder.typicode.com/posts/${postId}`;
+                    try {
+                        const respuesta = await axios.get(url);
+                        return respuesta.data;
+                    } catch (error) {
+                        console.error(`Error al obtener el post ${postId}:`, error.message);
+                        throw error; // Propagar el error para manejo externo
+                    }
+                },
+                async obtenerComments(postId){
+                    console.log('leyendo comentarios del post ',postId);
+                    const url = `https://jsonplaceholder.typicode.com/posts/${postId}/comments`;
+                    try {
+                        const respuesta = await axios.get(url);
+                        return respuesta.data;
+                    } catch (error) {
+                        console.error(`Error al obtener los comentarios del post ${postId}:`, error.message);
+                        throw error; // Propagar el error para manejo externo
+                    }
+                },
             },
             computed: {
                 tareasPendientes() {
@@ -199,6 +227,13 @@
                     // La cantidad total de tareas coinside con el tamaño del array
                     return this.tareas.length;
                 }
+            },
+            async mounted() {
+                // Para probar las funciones de obtención de datos con Axios
+                const post = await this.obtenerPost(1);
+                console.log('Post obtenido:', post);
+                const comments = await this.obtenerComments(1);
+                console.log('Comentarios obtenidos:', comments);
             }
         });
     </script>
