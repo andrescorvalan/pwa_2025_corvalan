@@ -7,7 +7,7 @@
             rel="stylesheet" 
             integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
             crossorigin="anonymous">
-    <title>Trabajo Práctico #1 - Vue.js</title>
+    <title>TP N°1 y N°2- Vue.js</title>
     <style>
         .post {
             cursor: pointer;
@@ -30,14 +30,26 @@
         <h1>Parcial N° 1</h1>
         <section class="border border-primary p-3 rounded shadow-sm mb-4">
             <h2>Paso #2 - Información de Perfil Simple</h2>
-            <p class="p-0"><span class="fw-bold">Nombre:</span> <span class="text-primary">{{ nombre }}</span></p>
-            <p class="p-0"><span class="fw-bold">Edad:</span> <span class="text-primary">{{ edad }}</span></p>
-            <p class="p-0"><span class="fw-bold">Ciudad:</span> <span class="text-primary">{{ ciudad }}</span></p>
+            <p class="p-0">
+                <span class="fw-bold">Nombre:</span>
+                <span class="text-primary">{{ nombre }}</span>
+            </p>
+            <p class="p-0">
+                <span class="fw-bold">Edad:</span>
+                <span class="text-primary">{{ edad }}</span>
+            </p>
+            <p class="p-0">
+                <span class="fw-bold">Ciudad:</span>
+                <span class="text-primary">{{ ciudad }}</span>
+            </p>
             <p class="p-2">Hola, mi nombre es {{ nombre }}, tengo {{ edad }} años y vivo en {{ ciudad }}.</p>
         </section>
         <section class="border border-primary p-3 rounded shadow-sm mb-4">
             <h2>Paso #3 - Contador Interactivo (Interpolación y Eventos)</h2>
-            <p class="p-0"><span class="fw-bold">Contador:</span> <span class="text-primary">{{ contador }}</span></p>           
+            <p class="p-0">
+                <span class="fw-bold">Contador:</span>
+                <span class="text-primary">{{ contador }}</span>
+            </p>
             <button @click="incrementar" class="btn btn-success me-2">
                 Incrementar
             </button>
@@ -62,9 +74,8 @@
                 </thead>
                 <tbody>
                     <tr v-for="unaTarea in tareas" :key="unaTarea.id">   
-                        <td><span :class="{'text-decoration-line-through text-muted': unaTarea.completada}">
-                                {{ unaTarea.texto }}
-                            </span>
+                        <td>
+                            <span :class="{'text-decoration-line-through text-muted': unaTarea.completada}">{{ unaTarea.texto }}</span>
                         </td>
                         <td>
                             <input type="checkbox" v-model="unaTarea.completada" class="border border-primary form-check-input me-2">
@@ -90,13 +101,13 @@
             <button @click="destruirInstanciaLista" class="btn btn-danger" :disabled="insLista == null">
                 Destruir la Instancia VUE
             </button>
-            <button @click="borrarTablaEventos" class="btn btn-danger" :disabled="insLista != null || listaeventos.length ==0">
+            <button @click="borrarTablaEventos" class="btn btn-danger" :disabled="insLista != null || listaeventos.length == 0">
                 Borrar la tabla de Eventos
             </button>
             <div id="textoListaEventos"><div id="listaEventos"></div></div>
             <!-- Listado de objetos de la lista de eventos -->
-            <table class="table table-striped table-hover table-bordered mt-4">    
-                <thead class="table-dark" v-if="listaeventos.length > 0">
+            <table class="table table-striped table-hover table-bordered mt-4" v-if="listaeventos.length > 0">    
+                <thead class="table-dark">
                     <tr>
                         <th scope="col">Id</th>
                         <th scope="col">Nombre</th>
@@ -105,32 +116,32 @@
                 </thead>
                 <tbody>
                     <tr v-for="unObjeto in listaeventos" :key="unObjeto.id">
-                        <td> {{ unObjeto.id }}</td>
-                        <td> {{ unObjeto.nombre }}</td>
-                        <td> {{ formatoTimestamp(unObjeto.timestamp) }}</td>
+                        <td>{{ unObjeto.id }}</td>
+                        <td>{{ unObjeto.nombre }}</td>
+                        <td>{{ formatoTimestamp(unObjeto.timestamp) }}</td>
                     </tr>  
                 </tbody>
             </table>
         </section>
         <section>
-            <h2>Paso #3 - Lista de posts</h2>
+            <h2>Paso #3 - Lista de posts y sus comentarios</h2>
             <article v-for="unPost in listaPost" :key="unPost.id" class="mb-4 border border-secondary rounded p-3">
                 <h3 class="post" :class="{activo: postsActual === unPost.id}"
                     @click="alternarVisibilidadComments(unPost.id)">
                     {{ unPost.title }}
                 </h3>
                 <p>{{ unPost.body }}</p>
-                <table class="table table-striped table-hover table-bordered mt-4" v-if="postsActual==unPost.id && listaComments.length > 0">    
+                <table class="table table-striped table-hover table-bordered mt-4" v-if="postsActual == unPost.id && listaComments.length > 0">    
                 <thead class="table-dark" >
                     <tr>
                         <th scope="col">Id</th>
-                        <th scope="col">Nombre</th>
+                        <th scope="col">Comentario</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="unComentario in listaComments" :key="unComentario.id">
-                        <td> {{ unComentario.id }}</td> 
-                        <td> {{ unComentario.name }}</td>
+                        <td>{{ unComentario.id }}</td> 
+                        <td>{{ unComentario.name }}</td>
                     </tr>  
                 </tbody>
                 </table>
@@ -161,7 +172,7 @@
                 insLista: null,     // Instancia de Vue para la lista de eventos
                 listaPost: [],
                 listaComments: [],
-                postsActual:0,
+                postsActual: 0,
             },
             methods: {
                 // Parcial 1
@@ -187,14 +198,14 @@
                 },
 
                 // Parcial 2
-                registrarEvento(nombre){
+                registrarEvento(nombre) {
                     this.listaeventos.push({
                         id: this.listaeventos.length+1,
                         nombre: nombre,
                         timestamp: Date.now()
                     })
                 },
-                crearInstanciaLista(){
+                crearInstanciaLista() {
                     this.listaeventos = []  // Reinicia la lista de eventos
                     this.insLista = new Vue({
                         el: '#listaEventos',
@@ -212,17 +223,17 @@
                         destroyed()     { app.registrarEvento('destroyed')},
                     });
                 },
-                actualizarInstanciaLista(){
+                actualizarInstanciaLista() {
                     if (this.insLista != null)
                         this.insLista.actualizaciones++
                 },
-                destruirInstanciaLista(){
+                destruirInstanciaLista() {
                     this.insLista.$destroy();
                     this.insLista = null;
                     document.getElementById("textoListaEventos").innerHTML = '<div id="listaEventos"></div>'
                 },
-                borrarTablaEventos(){
-                     this.listaeventos=[]
+                borrarTablaEventos() {
+                     this.listaeventos = []
                 },
                 formatoTimestamp(timestamp) {
                     const date = new Date(timestamp);
@@ -248,7 +259,7 @@
                         throw error; // Propagar el error para manejo externo
                     }
                 },
-                async obtenerComments(postId){
+                async obtenerComments(postId) {
                     console.log('leyendo comentarios del post ',postId);
                     const url = `https://jsonplaceholder.typicode.com/posts/${postId}/comments`;
                     try {
@@ -259,16 +270,16 @@
                         throw error; // Propagar el error para manejo externo
                     }
                 },
-                async alternarVisibilidadComments(postId){
+                async alternarVisibilidadComments(postId) {
                     // Si ya estan cargados los comentarios del post actual, se limpian
                     // Sino se cargan los comentarios del nuevo post (postId)
-                    if (this.postsActual==postId){
-                        this.listaComments=[]
-                        this.postsActual=0
+                    if (this.postsActual == postId){
+                        this.listaComments = []
+                        this.postsActual = 0
                     }else{
-                        this.postsActual=postId
-                        this.listaComments=[]
-                        this.listaComments=await this.obtenerComments(postId)
+                        this.postsActual = postId
+                        this.listaComments = []
+                        this.listaComments = await this.obtenerComments(postId)
                     }
                 },
             },
@@ -284,8 +295,8 @@
             },
             async mounted() {
                 let unPost;
-                for(let i=1;i<=10;i++){
-                    unPost=await this.obtenerPost(i)
+                for(let i=1;i<=10;i++) {
+                    unPost = await this.obtenerPost(i)
                     this.listaPost.push(unPost)
                 }
             }
