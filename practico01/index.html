@@ -8,6 +8,21 @@
             integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
             crossorigin="anonymous">
     <title>Trabajo Práctico #1 - Vue.js</title>
+    <style>
+        .post {
+            cursor: pointer;
+            padding: 0.2em 1em; 
+            border-radius: 4px;
+            transition: background-color 0.2s, color 0.2s;  
+        }
+        .post:hover {
+            background-color: #114da833;
+        }
+        .post.activo {
+            background-color:rgb(173, 216, 230);
+            color:blue
+        }
+    </style>
 </head>
 <body>
     <div id="app" class="container mt-5">
@@ -64,8 +79,8 @@
         
         <!-- Parcial 2 -->
         <h1>Parcial N° 2</h1>
-        <section>
-            <h2>Paso #1 - Lista de eventos (Nota. Tambien imprimo el Id aunque no se pedia)</h2>
+        <section> 
+            <h2>Paso #1 - Lista de eventos</h2>
             <button @click="crearInstanciaLista" class="btn btn-success me-2" :disabled="insLista != null">
                 Crear una Instancia VUE
             </button>       
@@ -97,6 +112,30 @@
                 </tbody>
             </table>
         </section>
+        <section>
+            <h2>Paso #3 - Lista de posts</h2>
+            <article v-for="unPost in listaPost" :key="unPost.id" class="mb-4 border border-secondary rounded p-3">
+                <h3 class="post" :class="{activo: postsActual === unPost.id}"
+                    @click="alternarVisibilidadComments(unPost.id)">
+                    {{ unPost.title }}
+                </h3>
+                <p>{{ unPost.body }}</p>
+                <table class="table table-striped table-hover table-bordered mt-4" v-if="postsActual==unPost.id && listaComments.length > 0">    
+                <thead class="table-dark" >
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Nombre</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="unComentario in listaComments" :key="unComentario.id">
+                        <td> {{ unComentario.id }}</td> 
+                        <td> {{ unComentario.name }}</td>
+                    </tr>  
+                </tbody>
+                </table>
+            </article>
+        </section>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
@@ -120,6 +159,9 @@
                 // Parcial 2
                 listaeventos: [],   // Lista de eventos del ciclo de vida    
                 insLista: null,     // Instancia de Vue para la lista de eventos
+                listaPost: [],
+                listaComments: [],
+                postsActual:0,
             },
             methods: {
                 // Parcial 1
@@ -217,6 +259,18 @@
                         throw error; // Propagar el error para manejo externo
                     }
                 },
+                async alternarVisibilidadComments(postId){
+                    // Si ya estan cargados los comentarios del post actual, se limpian
+                    // Sino se cargan los comentarios del nuevo post (postId)
+                    if (this.postsActual==postId){
+                        this.listaComments=[]
+                        this.postsActual=0
+                    }else{
+                        this.postsActual=postId
+                        this.listaComments=[]
+                        this.listaComments=await this.obtenerComments(postId)
+                    }
+                },
             },
             computed: {
                 tareasPendientes() {
@@ -229,11 +283,11 @@
                 }
             },
             async mounted() {
-                // Para probar las funciones de obtención de datos con Axios
-                const post = await this.obtenerPost(1);
-                console.log('Post obtenido:', post);
-                const comments = await this.obtenerComments(1);
-                console.log('Comentarios obtenidos:', comments);
+                let unPost;
+                for(let i=1;i<=10;i++){
+                    unPost=await this.obtenerPost(i)
+                    this.listaPost.push(unPost)
+                }
             }
         });
     </script>
