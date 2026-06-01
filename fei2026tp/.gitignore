@@ -1,0 +1,5 @@
+# Base de datos local (archivos persistidos)
+postgres_data/
+
+# Variables de entorno con credenciales reales
+.env
