@@ -10,3 +10,32 @@ services:
       - ./postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    
+  django:
+    build:
+      context: ./config/django-image
+      dockerfile: Dockerfile
+    image: fei2026tp:0.1
+    container_name: fei_django
+    # Configurar el usuario y grupo para el contenedor, usando las variables de entorno UID y GID o valores por defecto
+    # Util para evitar problemas de permisos al crear archivos desde el contenedor
+    user: "${UID:-1000}:${GID:-1000}"
+    volumes:
+      - ./backend:/usr/src/app:delegated
+    environment:
+      # Variables de entorno para la conexión a PostgreSQL y creación del superusuario de Django
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DJANGO_SU_NAME: ${DJANGO_SU_NAME}
+      DJANGO_SU_EMAIL: ${DJANGO_SU_EMAIL}
+      DJANGO_SU_PASSWD: ${DJANGO_SU_PASSWD}
+      DJANGO_SUPERUSER_USERNAME: ${DJANGO_SU_NAME}
+      DJANGO_SUPERUSER_EMAIL: ${DJANGO_SU_EMAIL}
+      DJANGO_SUPERUSER_PASSWORD: ${DJANGO_SU_PASSWD}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres

@@ -1,0 +1,7 @@
+Django
+psycopg2-binary
+django-rest-auth
+djangorestframework
+djangorestframework-jwt
+django-cors-headers
+djangorestframework-simplejwt
