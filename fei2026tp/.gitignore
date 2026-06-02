@@ -3,3 +3,7 @@ postgres_data/
 
 # Variables de entorno con credenciales reales
 .env
+
+# Caché de Python
+__pycache__/
+*.py[cod]
