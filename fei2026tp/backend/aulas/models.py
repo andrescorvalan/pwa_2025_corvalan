@@ -19,7 +19,7 @@ class Materia(models.Model):
     # Si se borra la carrera, se borran las materias asociadas (on_delete=models.CASCADE)
     id_carrera = models.ForeignKey(Carrera, on_delete=models.CASCADE, related_name='materias')
     # Clave foránea a Profesor
-    # Si se borra el profesr, se borran las materias asociadas (on_delete=models.CASCADE)
+    # Si se borra el profesor, se borran las materias asociadas (on_delete=models.CASCADE)
     # Si no se desea este comportamiento, se puede usar on_delete=models.SET_NULL y permitir null=True
     id_profesor = models.ForeignKey(Profesor, on_delete=models.CASCADE, related_name='materias')
     def __str__(self):
@@ -39,7 +39,7 @@ class ReservaAula(models.Model):
     id_aula = models.ForeignKey(Aula, on_delete=models.CASCADE, related_name='reservas')
     fh_desde = models.DateTimeField(null=False)
     fh_hasta = models.DateTimeField(null=False)
-    observacion = models.CharField(max_length=256, null=True, blank=True) # Se asume opcional, si el profe la quiere obligatoria sacale el null/blank
+    observacion = models.CharField(max_length=256, null=False, blank=True) 
 
     class Meta:
         # Nombre de la tabla en postgress, para respetar el enunciado y mas claridad en el nombre de tabla.
@@ -62,4 +62,6 @@ class HorarioMateria(models.Model):
         db_table = 'aulas_horario_materia'
 
     def __str__(self):
-        return f"Horario {self.id} - Materia {self.id_materia.nombre}"
+        desde_formateado = self.fh_desde.strftime('%d/%m/%Y %H:%M')
+        hasta_formateado = self.fh_hasta.strftime('%H:%M')
+        return f"Horario {self.id} - Materia {self.id_materia.nombre} - Aula {self.id_reserva.id_aula.descripcion} - ({desde_formateado} a {hasta_formateado})"
