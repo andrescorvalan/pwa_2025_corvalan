@@ -39,7 +39,7 @@ class ReservaAula(models.Model):
     id_aula = models.ForeignKey(Aula, on_delete=models.CASCADE, related_name='reservas')
     fh_desde = models.DateTimeField(null=False)
     fh_hasta = models.DateTimeField(null=False)
-    observacion = models.CharField(max_length=256, null=False, blank=True) 
+    observacion = models.CharField(max_length=256, null=False, blank=True,default='') 
 
     class Meta:
         # Nombre de la tabla en postgress, para respetar el enunciado y mas claridad en el nombre de tabla.
